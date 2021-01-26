@@ -1,0 +1,20 @@
+server {
+    server_name  jexim.loc;
+    root   /var/www/jexim;
+    charset utf-8;
+    index  index.php;
+    error_log   /var/log/nginx/error.log debug;
+    location / {
+        root   /var/www/jexim/frontend/public;
+        try_files  $uri /frontend/public/index.php?$args;
+        access_log  /var/www/jexim/frontend/runtime/access.log;
+    }
+
+    location ~* \.php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+    }
+}
